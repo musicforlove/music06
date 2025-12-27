@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* floating particles */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .particles span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      animation: float 25s linear infinite;
+      bottom: -150px;
+      border-radius: 50%;
+    }
+    @keyframes float {
+      0% { transform: translateY(0) scale(0); opacity: 1; }
+      100% { transform: translateY(-1000px) scale(1); opacity: 0; }
+    }
+
+    .player {
+      position: relative;
+      z-index: 2;
+      width: 320px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    .cover {
+      width: 100%;
+      height: 230px;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .cover img { width: 100%; height: 100%; object-fit: cover; }
+    .top-controls { display: flex; justify-content: space-between; margin: 8px 0; }
+    .top-controls i { font-size: 18px; cursor: pointer; }
+    .progress { width: 100%; margin: 10px 0; }
+    .buttons { display: flex; justify-content: space-around; align-items: center; margin: 15px 0; }
+    .buttons i { font-size: 24px; cursor: pointer; transition: 0.3s; }
+    .buttons i:hover { color: #ffdde1; transform: scale(1.1); }
+    .volume { width: 100%; margin-top: 10px; }
+
+    /* footer styling */
+    footer {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: white;
+      z-index: 2;
+    }
+    footer span {
+      background: rgba(0,0,0,0.4);
+      padding: 5px 12px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body>
+  <!-- background particles -->
+  <div class="particles">
+    <span style="left:10%; width:15px; height:15px; animation-duration:18s;"></span>
+    <span style="left:20%; width:25px; height:25px; animation-duration:22s;"></span>
+    <span style="left:40%; width:20px; height:20px; animation-duration:25s;"></span>
+    <span style="left:60%; width:30px; height:30px; animation-duration:28s;"></span>
+    <span style="left:80%; width:10px; height:10px; animation-duration:20s;"></span>
+    <span style="left:90%; width:18px; height:18px; animation-duration:26s;"></span>
+  </div>
+
+  <div class="player">
+    <div class="cover">
+      <img src="img.png" alt="Song Cover">
+    </div>
+
+    <div class="top-controls">
+      <i class="fas fa-plus"></i>
+      <i class="fas fa-heart"></i>
+    </div>
+
+    <input type="range" class="progress" id="progress" value="0" min="0" max="100">
+
+    <div class="buttons">
+      <i class="fas fa-backward"></i>
+      <i id="playPauseBtn" class="fas fa-play-circle" style="font-size:40px;"></i>
+      <i class="fas fa-forward"></i>
+    </div>
+
+    <input type="range" class="volume" id="volume" value="50" min="0" max="100">
+
+    <!-- Your song -->
+    <audio id="song" src="song.mp3"></audio>
+  </div>
+
+  <footer>
+    <span>Made by Animesh with ❤</span>
+  </footer>
+
+  <script>
+    const song = document.getElementById("song");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const progress = document.getElementById("progress");
+    const volume = document.getElementById("volume");
+
+    // Play / Pause
+    playPauseBtn.addEventListener("click", () => {
+      if (song.paused) {
+        song.play();
+        playPauseBtn.classList.replace("fa-play-circle", "fa-pause-circle");
+      } else {
+        song.pause();
+        playPauseBtn.classList.replace("fa-pause-circle", "fa-play-circle");
+      }
+    });
+
+    // Progress
+    song.addEventListener("timeupdate", () => {
+      progress.value = (song.currentTime / song.duration) * 100;
+    });
+
+    // Seek song
+    progress.addEventListener("input", () => {
+      song.currentTime = (progress.value / 100) * song.duration;
+    });
+
+    // Volume control
+    volume.addEventListener("input", () => {
+      song.volume = volume.value / 100;
+    });
+  </script>
+</body>
+</html>
